@@ -1,0 +1,58 @@
+export const roles = {
+  client: {
+    name: '客户端',
+    shortName: '客户端',
+    badge: 'Client',
+    icon: '⌁',
+    description: '关心画面、输入、反馈、性能和玩家手里的那一秒。',
+    tone: '作为客户端的你',
+    recommendRoles: ['server', 'qa'],
+  },
+  server: {
+    name: '服务器',
+    shortName: '服务器',
+    badge: 'Server',
+    icon: '◎',
+    description: '关心同步、房间、状态、稳定和一堆人同时在线时的秩序。',
+    tone: '作为服务器的你',
+    recommendRoles: ['client', 'operation'],
+  },
+  design: {
+    name: '策划',
+    shortName: '策划',
+    badge: 'Design',
+    icon: '✦',
+    description: '关心规则、节奏、目标、数值和玩家为什么还想再来一次。',
+    tone: '作为策划的你',
+    recommendRoles: ['qa', 'operation'],
+  },
+  operation: {
+    name: '运营',
+    shortName: '运营',
+    badge: 'Ops',
+    icon: '◈',
+    description: '关心活动、留存、社区、版本节奏和玩家回来的理由。',
+    tone: '作为运营的你',
+    recommendRoles: ['design', 'server'],
+  },
+  art: {
+    name: '美术',
+    shortName: '美术',
+    badge: 'Art',
+    icon: '✺',
+    description: '关心风格、角色、场景、演出和玩家第一眼记住什么。',
+    tone: '作为美术的你',
+    recommendRoles: ['client', 'design'],
+  },
+  qa: {
+    name: '测试',
+    shortName: '测试',
+    badge: 'QA',
+    icon: '◇',
+    description: '关心边界、复现、稳定、可读性和那些奇怪但真实的玩家操作。',
+    tone: '作为测试的你',
+    recommendRoles: ['client', 'design'],
+  },
+}
+
+export const roleOrder = ['client', 'server', 'design', 'operation', 'art', 'qa']
