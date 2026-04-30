@@ -14,7 +14,10 @@ const state = {
   selectedRole: null,
   current: 0,
   answers: [],
+  activeQuestions: [],
 }
+
+const QUESTION_LIMIT = 18
 
 const personalityNotes = {
   narrativeAdventure: {
@@ -94,7 +97,45 @@ function avatarUrl(profile) {
 }
 
 function getQuestions() {
-  return state.selectedRole ? questionBanks[state.selectedRole] : []
+  return state.activeQuestions
+}
+
+function buildFallbackOption(options) {
+  const totalByType = options.reduce((acc, option) => {
+    Object.entries(option.scores).forEach(([key, value]) => {
+      acc[key] = (acc[key] || 0) + value
+    })
+    return acc
+  }, {})
+  const averageByType = Object.fromEntries(
+    Object.entries(totalByType)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([key, value]) => [key, Math.max(1, Math.round(value / options.length))]),
+  )
+  return {
+    text: '都不完全符合，我会结合项目阶段权衡',
+    scores: averageByType,
+  }
+}
+
+function normalizeQuestion(question) {
+  const optionLabels = ['偏向体验感受', '偏向系统推进', '偏向风险控制', '偏向效率与节奏']
+  const normalizedOptions = question.options.map((option, index) => ({
+    ...option,
+    text: `${optionLabels[index] || `方案 ${index + 1}`}：${option.text}`,
+  }))
+  return {
+    ...question,
+    options: [...normalizedOptions, buildFallbackOption(normalizedOptions)],
+  }
+}
+
+function pickQuestions(roleKey) {
+  const source = (questionBanks[roleKey] || []).map((question) => normalizeQuestion(question))
+  if (source.length <= QUESTION_LIMIT) return source
+  const step = source.length / QUESTION_LIMIT
+  return Array.from({ length: QUESTION_LIMIT }, (_, index) => source[Math.floor(index * step)])
 }
 
 function readHistory() {
@@ -110,7 +151,7 @@ function writeHistory(history) {
 }
 
 function getRankings(roleKey = state.selectedRole, answers = state.answers) {
-  const questions = questionBanks[roleKey] || []
+  const questions = roleKey === state.selectedRole ? getQuestions() : pickQuestions(roleKey)
   const scores = Object.fromEntries(typeKeys.map((key) => [key, 0]))
   answers.forEach((answerIndex, questionIndex) => {
     const answer = questions[questionIndex]?.options[answerIndex]
@@ -129,7 +170,7 @@ function getScoreMap(rankings) {
 }
 
 function getStageScores(roleKey = state.selectedRole, answers = state.answers) {
-  const questions = questionBanks[roleKey] || []
+  const questions = roleKey === state.selectedRole ? getQuestions() : pickQuestions(roleKey)
   return answers.reduce((acc, answerIndex, questionIndex) => {
     const question = questions[questionIndex]
     const answer = question?.options[answerIndex]
@@ -150,6 +191,7 @@ function openStoredResult(roleKey) {
   state.selectedRole = roleKey
   state.current = 0
   state.answers = saved.answers
+  state.activeQuestions = pickQuestions(roleKey)
   render()
 }
 
@@ -416,10 +458,11 @@ function renderCrossResult() {
 }
 
 function startRole(roleKey) {
-  const questions = questionBanks[roleKey]
+  const questions = pickQuestions(roleKey)
   state.screen = 'quiz'
   state.selectedRole = roleKey
   state.current = 0
+  state.activeQuestions = questions
   state.answers = Array(questions.length).fill(null)
   render()
 }
