@@ -1,22 +1,62 @@
 import { createQuestions } from './factory.js'
 
-const stageTexts = {
-  prototype: ['还没上线时，你先判断它有没有？', '第一批玩家进来后，你最想观察？', '如果要做预热，你会抓？', 'Demo 传播点最像？', '早期社群最该聊？'],
-  pipeline: ['活动配置先规范？', '公告和素材先准备？', '数据看板先做？', '补偿流程先跑？', '版本日历先排？'],
-  content: ['新版本主打？', '活动奖励围绕？', '玩家回流靠？', '社区话题靠？', '长期运营先养？'],
-  testing: ['灰度时先看？', '评论区异常先查？', '活动数据先比？', '玩家投诉集中在？', '留存波动先怀疑？'],
-  launch: ['首发最该保证？', '第一天最怕？', '第一周最该推？', '高峰时先盯？', '节日活动先看？'],
-  retrospective: ['复盘最想留下？', '下次活动先复用？', '玩家画像最有用？', '如果重来先准备？', '最想看到反馈？'],
-}
+const rows = [
+  ['prototype', '还没上线前，你会先判断这个版本有没有“能火起来的一句话卖点”？', [
+    ['一句话就讲得清、配张图就想转发的版本主题', { narrativeAdventure: 2, cardCollection: 1 }],
+    ['能让玩家立刻聊输赢、聊段位的目标', { competitiveShooter: 3 }],
+    ['能让朋友自然组队开黑的活动规则', { coopSurvival: 2, sandboxSocial: 1 }],
+    ['能驱动玩家每天上线 10 分钟的轻量进度', { casualPuzzleMobile: 3 }],
+  ]],
+  ['prototype', '首批玩家进来后，你最想先盯哪类运营信号？', [
+    ['玩家会不会自发晒图、做二创', { sandboxSocial: 3 }],
+    ['从活动页到领奖页的转化有没有断层', { cardCollection: 3 }],
+    ['打完一局后，多快会点“再来一局”', { competitiveShooter: 3 }],
+    ['做完任务后，第二天还有没有动力回来', { openWorldRpg: 2, casualPuzzleMobile: 1 }],
+  ]],
+  ['prototype', '做第一轮预热时，你会优先准备哪类内容？', [
+    ['角色/皮肤排期和配套宣发素材', { cardCollection: 3 }],
+    ['赛季规则说明和高光回放片段', { sportsRacing: 2, competitiveShooter: 1 }],
+    ['世界观短片和剧情时间线梳理', { narrativeAdventure: 3 }],
+    ['社群共创话题和 UGC 模板', { sandboxSocial: 3 }],
+  ]],
 
-const optionSets = [
-  [['能被截图传播的场景或角色', { narrativeAdventure: 2, cardCollection: 1 }], ['能反复挑战的对局目标', { competitiveShooter: 3 }], ['能每天回来领和推进的奖励', { casualPuzzleMobile: 2, cardCollection: 2 }], ['能拉朋友一起玩的房间规则', { sandboxSocial: 3 }]],
-  [['赛季任务、段位和外观', { competitiveShooter: 3 }], ['卡池、角色活动和养成材料', { cardCollection: 3 }], ['世界事件和合作目标', { coopSurvival: 2, openWorldRpg: 1 }], ['排行榜、赛事和限时挑战', { sportsRacing: 3 }]],
-  [['日留、关卡失败率和奖励领取', { casualPuzzleMobile: 3 }], ['活动参与、付费和补偿领取', { cardCollection: 3 }], ['匹配时长、在线峰值和胜率', { competitiveShooter: 3 }], ['分享、创作和社区互动', { sandboxSocial: 3 }]],
-  [['主线完成和剧情讨论', { narrativeAdventure: 3 }], ['探索进度和版本回流', { openWorldRpg: 3 }], ['经济策略和长线目标', { strategySimulation: 3 }], ['队友招募和合作故事', { coopSurvival: 3 }]],
-  [['“我又回来打了一局”', { competitiveShooter: 2, sportsRacing: 1 }], ['“这次活动奖励挺香”', { cardCollection: 2, casualPuzzleMobile: 1 }], ['“这个房间适合朋友局”', { sandboxSocial: 3 }], ['“这个世界又更新了”', { openWorldRpg: 3 }]],
+  ['pipeline', '活动配置体系先规范哪块，最能少出线上事故？', [
+    ['开始/结束时间和时区规则', { sportsRacing: 2, cardCollection: 1 }],
+    ['领奖条件和补发兜底', { cardCollection: 3 }],
+    ['任务刷新节奏和回流门槛', { casualPuzzleMobile: 3 }],
+    ['组队人数门槛和掉线处理', { coopSurvival: 3 }],
+  ]],
+  ['pipeline', '排版本日历时，你会先锁定哪类关键节点？', [
+    ['宣发节奏和素材交付的倒排计划', { narrativeAdventure: 2, openWorldRpg: 1 }],
+    ['赛季重置和排行榜结算窗口', { competitiveShooter: 3 }],
+    ['大型活动与卡池上线的错峰节奏', { cardCollection: 3 }],
+    ['社区挑战和创作征集周期', { sandboxSocial: 3 }],
+  ]],
+  ['pipeline', '你希望数据看板先回答清楚哪个问题？', [
+    ['玩家从“看到活动”到“实际参与”卡在哪一步', { casualPuzzleMobile: 2, cardCollection: 2 }],
+    ['不同分段玩家各自在哪个时间点流失', { competitiveShooter: 3 }],
+    ['社群传播到底带来了多少自然新增', { sandboxSocial: 3 }],
+    ['世界事件有没有明显提升探索回访', { openWorldRpg: 3 }],
+  ]],
+
+  ['content', '新版本主打内容，你更愿意押注哪种方向？', [
+    ['“这段剧情一定要看完”的主题事件', { narrativeAdventure: 3 }],
+    ['“这个赛季必须冲分”的段位目标', { competitiveShooter: 3 }],
+    ['“这期卡池值得抽”的收集驱动力', { cardCollection: 3 }],
+    ['“这周朋友局必须开起来”的社交玩法', { coopSurvival: 2, sandboxSocial: 1 }],
+  ]],
+  ['content', '做回流方案时，你最先补哪块短板？', [
+    ['回归任务链和追赶奖励', { casualPuzzleMobile: 2, openWorldRpg: 1 }],
+    ['老玩家赛季目标断档的问题', { competitiveShooter: 3 }],
+    ['卡池价值感和资源焦虑', { cardCollection: 3 }],
+    ['社群关系断了之后怎么把人拉回来', { sandboxSocial: 3 }],
+  ]],
+  ['content', '做社区运营时，你最想放大哪类讨论？', [
+    ['打法攻略和阵容博弈', { strategySimulation: 2, competitiveShooter: 1 }],
+    ['剧情猜想和角色关系', { narrativeAdventure: 3 }],
+    ['玩家创作和二创接龙', { sandboxSocial: 3 }],
+    ['抽卡欧非和养成路线', { cardCollection: 3 }],
+  ]],
 ]
 
-export const operationQuestions = createQuestions(Object.entries(stageTexts).flatMap(([stage, texts], stageIndex) =>
-  texts.map((text, index) => [stage, text, optionSets[(stageIndex + index) % optionSets.length]]),
-))
+export const operationQuestions = createQuestions(rows)
